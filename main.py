@@ -29,7 +29,30 @@ rows_data = []
 for row in rows_html:
     current_row = []
     row_data = row.findAll("td")
-    for data in row_data:
+    for idx,data in enumerate(row_data):
         #print(data.text[:-1])
-        current_row.extend([data.text[:-1]]) # Removing "\n"
+        # Removing , from date
+        if idx == 2:
+            date = data.text[:-1]
+            date = date.split(", ")
+            date = " ".join(date)
+            current_row.extend([date])
+        else:
+            current_row.extend([data.text[:-1]])
     rows_data.append(current_row)
+#print(rows_data[1]) # Missing Android Name
+rows_data[1].insert(0, rows_data[0][0])
+#print(rows_data)
+
+# Saving scrapped info into a csv file
+with open("android history.csv", "w") as file:
+    header_string = ",".join(column_title)
+    header_string += "\n"
+    file.write(header_string)
+    for row in rows_data:
+        data = ""
+        data = ",".join(row)
+        data += "\n"
+        file.write(data)
+    file.close()
+    
